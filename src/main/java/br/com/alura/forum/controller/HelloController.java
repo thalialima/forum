@@ -13,6 +13,6 @@ public class HelloController {
 	//devolve a string direto para o navegador
 	@ResponseBody
 	public String hello() {
-		return "<h1>Hello World!</h1>";
+		return "<h1>Hello World!!!!!!</h1>";
 	}
 }
