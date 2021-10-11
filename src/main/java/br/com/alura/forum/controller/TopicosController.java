@@ -4,6 +4,8 @@ import java.net.URI;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +50,8 @@ public class TopicosController {
 	//TopocoForm é um DTO para receber dados do cliente
 	//@RequestBody indica que os parâmentros devem ser pegos do corpo da requisição
 	//o código 201 indica que algo foi criado com sucesso no servidor
-	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody TopicoForm form, UriComponentsBuilder uriBuilder) {
+	//@Valid faz com que as validações do bean validation sejam executadas
+	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder) {
 		Topico topico = form.toTopico(cursoRepository);
 		topicoRepository.save(topico);
 		
