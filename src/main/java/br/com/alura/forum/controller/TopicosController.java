@@ -1,15 +1,15 @@
 package br.com.alura.forum.controller;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -48,9 +48,12 @@ public class TopicosController {
 
 	// read
 	@GetMapping
-	public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso, 
-		@PageableDefault(sort = "id", direction = Direction.DESC) Pageable paginacao) {
-		
+
+	// Indica que o retorno desse método deve ser guardado em cache
+	@Cacheable(value = "listaDeTopicos")
+	public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso,
+			@PageableDefault(sort = "id", direction = Direction.DESC) Pageable paginacao) {
+
 		if (nomeCurso == null) {
 			// findAll faz uma consulta carregando todos os registros do BD
 			Page<Topico> topicos = topicoRepository.findAll(paginacao);
@@ -61,6 +64,8 @@ public class TopicosController {
 		}
 	}
 
+	// atualiza a cache
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	// create/save
 	@PostMapping
 	@Transactional
@@ -91,6 +96,8 @@ public class TopicosController {
 		return ResponseEntity.notFound().build();
 	}
 
+	// atualiza a cache
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	// update
 	@PutMapping("/{id}")
 	// @Transactional avisa ao Sring para commitar a transação no final do método
@@ -110,6 +117,8 @@ public class TopicosController {
 
 	}
 
+	// atualiza a cache
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	// delete
 	@DeleteMapping("/{id}")
 	@Transactional
