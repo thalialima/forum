@@ -1,14 +1,19 @@
 package br.com.alura.forum.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 //dentro dessa classe estão todas as configurações de segurança do projeto
 //habilita o spring security
@@ -19,6 +24,13 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AutenticacaoService autenticacaoService;
+	
+	@Override
+	@Bean
+	//método que faz a injeção de dependências do authManager
+	protected AuthenticationManager authenticationManager() throws Exception {
+		return super.authenticationManager();
+	}
 	
 	//faz a configuração de autenticação(login)
 	@Override
@@ -34,11 +46,16 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 			.antMatchers(HttpMethod.GET, "/topicos").permitAll()
 			.antMatchers(HttpMethod.GET, "/topicos/*").permitAll()
+			.antMatchers(HttpMethod.POST, "/auth").permitAll()
 			//só permite disparar requisições para esse endereço se o cliente estivar autenticado
 			//somentes as urls que não foram configuradas terão exigencia de autenticação
 			.anyRequest().authenticated()
+			//disabilita a proteção desnecessária
+			.and().csrf().disable()
+			//indica que a aplicação é statless
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 			//indica ao Spring gerar um fomulário de atenticação
-			.and().formLogin();
+			//.and().formLogin();
 	}
 
 	//faz configuraçoes de recursos estáticos(js, imagens, etc.)
