@@ -54,6 +54,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, "/topicos").permitAll()
 			.antMatchers(HttpMethod.GET, "/topicos/*").permitAll()
 			.antMatchers(HttpMethod.POST, "/auth").permitAll()
+			//este endpoint devolve infos sensíveis sobre a aplicação
+			//nao deve ser mostrado em produção
+			.antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 			//só permite disparar requisições para esse endereço se o cliente estivar autenticado
 			//somentes as urls que não foram configuradas terão exigencia de autenticação
 			.anyRequest().authenticated()

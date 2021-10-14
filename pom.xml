@@ -30,7 +30,20 @@
 			<artifactId>h2</artifactId>
 		</dependency>
 
-		<!-- adiciona banco de dados -->
+		<!-- adiciona actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+		<!-- spring boot admin client -->
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-starter-client</artifactId>
+			<version>2.4.3</version>
+		</dependency>
+
+		<!-- adiciona jwt -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
