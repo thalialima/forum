@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -14,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import br.com.alura.forum.repository.UsuarioRepository;
 
 //dentro dessa classe estão todas as configurações de segurança do projeto
 //habilita o spring security
@@ -24,6 +25,12 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AutenticacaoService autenticacaoService;
+	
+	@Autowired
+	private TokenService tokenService;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 	
 	@Override
 	@Bean
@@ -53,9 +60,11 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 			//disabilita a proteção desnecessária
 			.and().csrf().disable()
 			//indica que a aplicação é statless
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			//indica ao Spring gerar um fomulário de atenticação
 			//.and().formLogin();
+			.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository)
+					,UsernamePasswordAuthenticationFilter.class);
 	}
 
 	//faz configuraçoes de recursos estáticos(js, imagens, etc.)
