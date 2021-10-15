@@ -24,7 +24,7 @@ import br.com.alura.forum.repository.UsuarioRepository;
 @Configuration
 
 //carrega a classe de acordo com o profile ativo
-@Profile("prod")
+@Profile(value= {"prod", "test"})
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Autowired
